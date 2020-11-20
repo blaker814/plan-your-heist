@@ -10,19 +10,50 @@ namespace PlanYourHeist
         {
             Console.WriteLine("Plan Your Heist!");
             List<TeamMember> heistTeam = AssembleTeam();
-            int luckValue = new Random().Next(-10, 10);
-            Bank bank = new Bank(100 + luckValue);
+            int numTries = GetNumTrials();
             Console.WriteLine($"Your heist team contains {heistTeam.Count} member(s)");
-            int totalSkill = heistTeam.Sum(member => member.SkillLevel);
-            Console.WriteLine(@$"Team's combined skill level: {totalSkill}
+            Trials(numTries, heistTeam);
+        }
+        static void Trials(int attempts, List<TeamMember> team)
+        {
+            for (int i = 0; i < attempts; i++)
+            {
+                int luckValue = new Random().Next(-10, 10);
+                Bank bank = new Bank(100 + luckValue);
+                int totalSkill = team.Sum(member => member.SkillLevel);
+                Console.WriteLine(@$"Team's combined skill level: {totalSkill}
 Bank's difficulty level: {bank.DifficultyLevel}");
-            if (totalSkill >= bank.DifficultyLevel)
-            {
-                Console.WriteLine("Success!");
+                if (totalSkill >= bank.DifficultyLevel)
+                {
+                    Console.WriteLine("Success!");
+                }
+                else
+                {
+                    Console.WriteLine("Heist failed");
+                }
             }
-            else
+        }
+        static int GetNumTrials()
+        {
+            while (true)
             {
-                Console.WriteLine("Heist failed");
+                Console.Write("How many trial runs should the program perform? ");
+                try
+                {
+                    int tries = int.Parse(Console.ReadLine());
+                    if (tries > 0)
+                    {
+                        return tries;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please enter a positive integer");
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("Please enter a positive integer");
+                }
             }
         }
         static List<TeamMember> AssembleTeam()
