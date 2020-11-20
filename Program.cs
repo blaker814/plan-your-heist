@@ -11,27 +11,59 @@ namespace PlanYourHeist
             Console.WriteLine("Plan Your Heist!");
             List<TeamMember> heistTeam = AssembleTeam();
             int numTries = GetNumTrials();
-            Console.WriteLine($"Your heist team contains {heistTeam.Count} member(s)");
             Trials(numTries, heistTeam);
         }
         static void Trials(int attempts, List<TeamMember> team)
         {
+            Bank bank = GetBankDifficultyLevel();
+            Console.WriteLine($"Your heist team contains {team.Count} member(s)");
+            int totalSkill = team.Sum(member => member.SkillLevel);
+            int successes = 0;
+            int failures = 0;
             for (int i = 0; i < attempts; i++)
             {
                 int luckValue = new Random().Next(-10, 10);
-                Bank bank = new Bank(100 + luckValue);
-                int totalSkill = team.Sum(member => member.SkillLevel);
+                int difficulty = bank.DifficultyLevel + luckValue;
                 Console.WriteLine(@$"Team's combined skill level: {totalSkill}
-Bank's difficulty level: {bank.DifficultyLevel}");
-                if (totalSkill >= bank.DifficultyLevel)
+Bank's difficulty level: {difficulty}");
+                if (totalSkill >= difficulty)
                 {
+                    successes++;
                     Console.WriteLine("Success!");
                 }
                 else
                 {
+                    failures++;
                     Console.WriteLine("Heist failed");
                 }
             }
+            Console.WriteLine($"You had {successes} successful runs and {failures} failed runs.");
+        }
+        static Bank GetBankDifficultyLevel()
+        {
+            Bank bank = new Bank();
+            while (true)
+            {
+                Console.Write("What is the difficulty level of the bank you plan to rob? ");
+                try
+                {
+                    int level = int.Parse(Console.ReadLine());
+                    if (level > 0)
+                    {
+                        bank.DifficultyLevel = level;
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please enter a positive integer");
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("Please enter a positive integer");
+                }
+            }
+            return bank;
         }
         static int GetNumTrials()
         {
