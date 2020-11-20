@@ -10,9 +10,12 @@ namespace PlanYourHeist
         {
             Console.WriteLine("Plan Your Heist!");
             List<TeamMember> heistTeam = AssembleTeam();
-            Bank bank = new Bank(100);
-            Console.WriteLine($"Your heist team contains {heistTeam.Count} members");
+            int luckValue = new Random().Next(-10, 10);
+            Bank bank = new Bank(100 + luckValue);
+            Console.WriteLine($"Your heist team contains {heistTeam.Count} member(s)");
             int totalSkill = heistTeam.Sum(member => member.SkillLevel);
+            Console.WriteLine(@$"Team's combined skill level: {totalSkill}
+Bank's difficulty level: {bank.DifficultyLevel}");
             if (totalSkill >= bank.DifficultyLevel)
             {
                 Console.WriteLine("Success!");
